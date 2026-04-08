@@ -6,7 +6,7 @@
 
 [Article on Codrops](https://tympanus.net/codrops/?p=92571)
 
-[Demo](https://tympanus.net/Development/RepeatingImageTransition/)
+[View](https://auseyoo.github.io/mypage2/)
 
 
 ## License
