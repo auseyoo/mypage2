@@ -147,6 +147,10 @@ const positionPanelBasedOnClick = (clickedItem) => {
   } else {
     panel.classList.remove('panel--right');
   }
+  // ✨ 여기에 추가: HTML에서 넣은 data-custom-class를 panel에 붙여줌
+  if (clickedItem.dataset.customClass) {
+    panel.classList.add(clickedItem.dataset.customClass);
+  }
 
   // ✨ New logic to flip clipPathDirection if enabled
   if (config.autoAdjustHorizontalClipPath) {
@@ -433,6 +437,11 @@ const generateMotionPath = (startRect, endRect, steps) => {
 const resetView = () => {
   if (isAnimating) return;
   isAnimating = true;
+
+  // ✨ 여기에 추가: 열 때 붙였던 커스텀 클래스를 다시 제거 (초기화)
+  if (currentItem && currentItem.dataset.customClass) {
+    panel.classList.remove(currentItem.dataset.customClass);
+  }
 
   const allItems = document.querySelectorAll('.grid__item');
   const delays = computeStaggerDelays(currentItem, allItems);
