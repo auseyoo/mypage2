@@ -1,6 +1,6 @@
-# Repeating Image Transition
+# Fashion Portfolio
 
-A transition that moves an image in frames (image copies/repetitions) on a path.
+패션포트폴리오 입니다
 
 ![Image Title](https://tympanus.net/codrops/wp-content/uploads/2025/04/RepetitionEffect_featured-2.jpg)
 
@@ -22,4 +22,4 @@ Follow Codrops: [Bluesky](https://bsky.app/profile/codrops.bsky.social), [Facebo
 
 ## License
 
-[MIT](LICENSE)
+[윤미연](LICENSE)
