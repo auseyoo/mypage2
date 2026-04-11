@@ -194,7 +194,10 @@ const getClipPathsForDirection = (direction) => {
   }
 };
 
-// Handle click on a grid item and trigger the full transition
+// Handle click on a grid item and trigger the full transition**/
+
+
+
 const onGridItemClick = (item) => {
   if (isAnimating) return;
   isAnimating = true;
