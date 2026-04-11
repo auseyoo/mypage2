@@ -362,6 +362,7 @@ main {
 }
 
 .panel__close {
+  background: none;
   width: 30px;
   height: 30px;
   border: 0;
@@ -370,8 +371,7 @@ main {
   font: inherit;
   cursor: pointer;
   color: var(--color-close);
-  background: url(/assets/close.png) center center no-repeat !important;
-  background-size: 100% auto;
+
   &:hover,
   &:focus {
     outline: none;
