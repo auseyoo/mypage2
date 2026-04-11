@@ -1,5 +1,7 @@
 import { preloadImages } from './utils.js';
 
+let slideInterval = null; // 슬라이드 타이머 변수
+
 // Configuration object for animation settings
 const config = {
   clipPathDirection: 'top-bottom', // Direction of clip-path animation ('top-bottom', 'bottom-top', 'left-right', 'right-left')
@@ -210,8 +212,8 @@ const onGridItemClick = (item) => {
   // Position the panel, with updated config
   positionPanelBasedOnClick(item);
 
-  const { imgURL, title, desc } = extractItemData(item);
-  setPanelContent({ imgURL, title, desc });
+  const { imgURL, images, title, desc } = extractItemData(item);
+  setPanelContent({ imgURL, images, title, desc });
 
   const allItems = document.querySelectorAll('.grid__item');
   const delays = computeStaggerDelays(item, allItems);
@@ -227,18 +229,67 @@ const onGridItemClick = (item) => {
 const extractItemData = (item) => {
   const imgDiv = item.querySelector('.grid__item-image');
   const caption = item.querySelector('figcaption');
+  
+  // 💡 HTML의 data-images를 읽어옵니다.
+  const rawImages = item.dataset.images ? item.dataset.images.split(',') : [];
+  const images = rawImages.length > 0 ? rawImages.map(img => img.trim()) : [imgDiv.style.backgroundImage.replace(/url\(['"]?(.*?)['"]?\)/, '$1')];
+  
   return {
     imgURL: imgDiv.style.backgroundImage,
+    images: images, 
     title: caption.querySelector('h3').textContent,
     desc: caption.querySelector('p').textContent,
   };
 };
 
-// Set the panel's background and text based on clicked item
-const setPanelContent = ({ imgURL, title, desc }) => {
-  panel.querySelector('.panel__img').style.backgroundImage = imgURL;
+// 2. 패널에 데이터를 넣고 슬라이드를 돌리는 곳
+const setPanelContent = ({ imgURL, images, title, desc }) => {
+  const panelImg = panel.querySelector('.panel__img');
+  panelImg.style.backgroundImage = imgURL; 
   panel.querySelector('h3').textContent = title;
   panel.querySelector('p').textContent = desc;
+
+  // 💡 기존에 돌던 슬라이드가 있으면 멈춤
+  if (slideInterval) clearInterval(slideInterval);
+
+  // 💡 이미지가 2개 이상일 때만 자동 슬라이드 시작
+  let arrowWrapper = panel.querySelector('.panel__arrows');
+  if (!arrowWrapper) {
+    arrowWrapper = document.createElement('div');
+    arrowWrapper.className = 'panel__arrows';
+    arrowWrapper.innerHTML = `
+      <button class="arrow-prev" style="position:absolute; left:20px; top:50%; z-index:100; background:rgba(0,0,0,0.3); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; font-size:20px;">&lt;</button>
+      <button class="arrow-next" style="position:absolute; right:20px; top:50%; z-index:100; background:rgba(0,0,0,0.3); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; font-size:20px;">&gt;</button>
+    `;
+    panel.appendChild(arrowWrapper);
+  }
+  
+  arrowWrapper.style.display = images.length > 1 ? 'block' : 'none';
+
+  if (images && images.length > 1) {
+    let currentIndex = 0;
+    
+    // 이미지 교체 로직 (기존 GSAP 애니메이션 활용)
+    const updateImg = (idx) => {
+      currentIndex = idx;
+      const nextImg = images[currentIndex];
+      gsap.to(panelImg, {
+        opacity: 0,
+        duration: 0.2,
+        onComplete: () => {
+          panelImg.style.backgroundImage = nextImg.includes('url(') ? nextImg : `url(${nextImg})`;
+          gsap.to(panelImg, { opacity: 1, duration: 0.2 });
+        }
+      });
+    };
+
+    // 버튼 클릭 이벤트 등록
+    arrowWrapper.querySelector('.arrow-prev').onclick = (e) => { e.stopPropagation(); clearInterval(slideInterval); updateImg((currentIndex - 1 + images.length) % images.length); };
+    arrowWrapper.querySelector('.arrow-next').onclick = (e) => { e.stopPropagation(); clearInterval(slideInterval); updateImg((currentIndex + 1) % images.length); };
+
+    // 3초 자동 슬라이드 시작
+    slideInterval = setInterval(() => updateImg((currentIndex + 1) % images.length), 3000);
+  }
 };
 
 // Calculate the center position of an element
@@ -438,6 +489,12 @@ const generateMotionPath = (startRect, endRect, steps) => {
 
 // Reset everything and return to the initial grid view
 const resetView = () => {
+  // 💡 패널 닫을 때 슬라이드 종료
+  if (slideInterval) {
+    clearInterval(slideInterval);
+    slideInterval = null;
+  }
+
   if (isAnimating) return;
   isAnimating = true;
 
