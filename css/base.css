@@ -254,8 +254,9 @@ main {
 .grid__item-image {
   width: 100%;
   aspect-ratio: var(--aspect);
-  background-size: 100%;
+  background-size: auto 100%;
   background-position: 50% 50%;
+  background-repeat: no-repeat;
   transition: opacity 0.15s cubic-bezier(0.2, 0, 0.2, 1);
       border: 5px solid gray;
 }
@@ -357,6 +358,7 @@ main {
   margin: 0;
   max-width: 150px;
   text-wrap: pretty;
+  max-width: fit-content;
 }
 
 .panel__close {
@@ -368,7 +370,8 @@ main {
   font: inherit;
   cursor: pointer;
   color: var(--color-close);
-  background: url(/assets/close.png) center center no-repeat;
+  background: url(/assets/close.png) center center no-repeat !important;
+  background-size: 100% auto;
   &:hover,
   &:focus {
     outline: none;
