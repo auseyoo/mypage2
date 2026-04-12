@@ -110,6 +110,26 @@ a {
   }
 }
 
+.music-info {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000; /* 다른 요소보다 위에 보이게 */
+  color: #fff;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.4); /* 배경을 살짝 어둡게 해서 글자 잘 보이게 */
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-family: sans-serif;
+  letter-spacing: 1px;
+  pointer-events: none; /* 클릭 방해 안 되게 */
+}
+
+.music-title {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
 .line {
   display: inline-block;
   overflow: hidden;
@@ -296,15 +316,14 @@ main {
     grid-template-rows: 100%;
   }
 }
-.panel.exl {
+/* .panel.exl {
   display: inline-block;
-}
-.panel.exl .panel__content {
+} */
+/* .panel.exl .panel__content {
   position: absolute;
   top:50%;
   left: 50%;
-
-}
+} */
 .panel.exl .panel__content h3 {
   font-size: 2rem;
 }
